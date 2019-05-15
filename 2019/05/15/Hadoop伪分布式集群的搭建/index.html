@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="阿九的博客">
+    <meta name="keyword" content="阿九">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        Hadoop伪分布式集群的搭建 - 阿九的狗窝 | Ajiu&#39;s kennel
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> 人生就是不停的遇到困难，然后解决困难 </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar">
+            <img src="/img/avatar.jpg">
+        </div>
+        <div class="name">
+            <i>阿 九</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li>
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li>
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li>
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input">
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+        <div class="index-about-mobile">
+            <i> 人生就是不停的遇到困难，然后解决困难 </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        Hadoop伪分布式集群的搭建
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2019-05-15 17:47:07</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#Hadoop" title="Hadoop">Hadoop</a>
+        <span>/</span>
+        
+        <a class="tag" href="/tags/#Ubuntu" title="Ubuntu">Ubuntu</a>
+        <span>/</span>
+        
+        <a class="tag" href="/tags/#分布式" title="分布式">分布式</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+
+    </div>
+    <div class="post-content ">
+        <p>我在后面学习Hive的时候，在最开始我的Hadoop集群搭建的有问题，所以我决定重头搭建，然后做出笔记。写了一些自己遇到的坑，这里来把这些坑给填上。</p>
+<p>Hadoop基本安装配置主要包括以下5个步骤。<br>（1）创建Hadoop用户<br>（2）安装Java<br>（3）设置SSH登录权限<br>（4）单机安装配置<br>（5）伪分布式安装配置<br>我使用的操作系统是Ubuntu14.4，Hadoop版本为2.7.3</p>
+<p>###第一步，先安装一个Linux系统，创建Hadoop用户<br>我用的是VMware虚拟机，我大学生涯就用了这一个虚拟机，感觉短小精悍功能强大。<br>我选择的是Ubuntu系统，因为我感觉Ubuntu的系统用起来比较舒服，并且遇到问题在网络上写Ubuntu的解决方案也比较多，推荐使用Ubuntu。<br><img src="http:// prj1hj366.bkt.clouddn.com/qiniu_picGO/20190515175725.png" alt><br>这里我就完成了第一步的操作<br>在创建虚拟机的过程中我就建立了一个Hadoop用户，为了规范，在使用Linux系统对于用户比较敏感，因为Linux是多用户的。尽量养成一种好的习惯，名字为Hadoop用户那么这个用户就是关于Hadoop的。</p>
+<p>###第二步，安装Java<br>我以为是新装的Ubuntu不能连接FileZilla，需要下载ssh</p>
+<p>安装ssh<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-<span class="builtin-name">get</span> install openssh-server</span><br></pre></td></tr></table></figure></p>
+<p>安装完后查看ssh server是否启动<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="regexp">/etc/i</span>nit.d<span class="regexp">/ssh status</span></span><br></pre></td></tr></table></figure></p>
+<p>如果没有启动，使用一下命令启动：<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="regexp">/etc/i</span>nit.d<span class="regexp">/ssh start</span></span><br></pre></td></tr></table></figure></p>
+<p>根据ifconfig查看IP，用FileZilla连接，使用非常简单一看就会。<br>网上下载一个JDK-linux版本的</p>
+<p>这里遇到了一个坑，一定要注意和自己Linux位数相同的看好自己的是32位还是64位，我下的12.0.1版本的JDK<br><figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo uname <span class="comment">--m</span></span><br></pre></td></tr></table></figure></p>
+<p>之后就是JDK的配置问题，网络有有好多的配置方法可以参考</p>
+<p>####特别注意<br>在配置环境变量的时候<br><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo gedit ~<span class="string">/.bashrc</span>    <span class="comment">#这里配置是给当前用户配置的环境变量，如果用的prefile配置则不考虑用户的问题，特别注意</span></span><br></pre></td></tr></table></figure></p>
+<p>###第三步，SSH登录权限设置，设置无密码登录<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get install openssh-server   <span class="comment">#安装SSH server</span></span><br><span class="line">$ ssh localhost                         <span class="comment">#登陆SSH，第一次登陆输入yes</span></span><br><span class="line">$ <span class="keyword">exit</span>                                  <span class="comment">#退出登录的ssh localhost</span></span><br><span class="line">$ cd ~<span class="regexp">/.ssh/</span>                            <span class="comment">#如果没法进入该目录，执行一次ssh localhost</span></span><br><span class="line">$ ssh-keygen -t rsa</span><br></pre></td></tr></table></figure></p>
+<p><img src="http:// prj1hj366.bkt.clouddn.com/qiniu_picGO/20190515203918.png" alt></p>
+<p>其中，第一次回车是让KEY存于默认位置，以方便后续的命令输入。第二次和第三次是确定passphrase，相关性不大。两次回车输入完毕以后，如果出现类似于下图所示的输出，即成功：</p>
+<p><img src="http:// prj1hj366.bkt.clouddn.com/qiniu_picGO/20190515203954.png" alt></p>
+<p>之后再输入<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cat ./id_rsa.pub <span class="meta">&gt;&gt; </span>./authorized_keys <span class="comment">#加入授权</span></span><br><span class="line">$ ssh localhost                         <span class="comment">#此时已不需密码即可登录localhost</span></span><br></pre></td></tr></table></figure></p>
+<p>###第四步，单机安装Hadoop<br>我安装的Hadoop版本为2.7.3，下载地址为<a href="http://hadoop.apache.org/releases.html#Download，" target="_blank" rel="noopener">http://hadoop.apache.org/releases.html#Download，</a><br>在目录中选择hadoop-2.7.3.tar.gz进行下载就行了<br>我是放在了/usr/local/haddoop文件夹下，注意这里一定要改这个文件夹的权限<br><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chown -R hadoop <span class="string">./hadoop</span>                        <span class="comment">#修改文件权限</span></span><br></pre></td></tr></table></figure></p>
+<p>然后给hadoop配置环境变量，在当前用户下配置<br><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gedit ~<span class="string">/.bashrc</span></span><br></pre></td></tr></table></figure></p>
+<p>添加如下代码：<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="builtin-name">export</span> <span class="attribute">HADOOP_HOME</span>=/usr/local/hadoop/hadoop-2.7.3  #这里的路径为你安装hadoop的文件夹</span><br><span class="line"><span class="builtin-name">export</span> <span class="attribute">CLASSPATH</span>=$($HADOOP_HOME/bin/hadoop classpath):<span class="variable">$CLASSPATH</span></span><br><span class="line"><span class="builtin-name">export</span> <span class="attribute">HADOOP_COMMON_LIB_NATIVE_DIR</span>=<span class="variable">$HADOOP_HOME</span>/lib/native</span><br><span class="line"><span class="builtin-name">export</span> <span class="attribute">PATH</span>=<span class="variable">$PATH</span>:$HADOOP_HOME/bin:$HADOOP_HOME/sbin</span><br></pre></td></tr></table></figure></p>
+<p>####注意：一定要看好自己装的文件夹，别把Hadoop的上级文件放上去。就是在这个目录下一级是如下图所示：<br><img src="http:// prj1hj366.bkt.clouddn.com/qiniu_picGO/20190515205305.png" alt></p>
+<p>在使用source ~/.bashrc命令出现如下图，证明你迈出了第一步，安装好了Hadoop但是没有集群的搭建，不要放弃，也不要觉得配置完了<br>接下来才是更大的难题，更容易出错的地方<br><img src="http:// prj1hj366.bkt.clouddn.com/qiniu_picGO/20190515205548.png" alt></p>
+<p>###第五步，Hadoop伪分布式安装</p>
+<p>Hadoop 可以在单节点上以伪分布式的方式运行，Hadoop 进程以分离的 Java 进程来运行，节点既作为 NameNode 也作为 DataNode，同时，读取的是 HDFS 中的文件。Hadoop 的配置文件位于 /usr/local/hadoop/etc/hadoop/ 中，伪分布式需要修改2个配置文件 core-site.xml 和 hdfs-site.xml 。Hadoop的配置文件是 xml 格式，每个配置以声明 property 的 name 和 value 的方式来实现。首先将jdk1.7的路径添（export JAVA_HOME=/usr/lib/jvm/java ）加到hadoop-env.sh文件 </p>
+<p><img src="http:// prj1hj366.bkt.clouddn.com/qiniu_picGO/20190515211148.png" alt></p>
+<p>接下来修改core-site.xml文件:<br><figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="params">&lt;configuration&gt;</span></span><br><span class="line"> <span class="params">&lt;name&gt;</span>hadoop.tmp.dir<span class="params">&lt;/name&gt;</span></span><br><span class="line">             <span class="params">&lt;value&gt;</span>file:<span class="meta-keyword">/usr/</span>local<span class="meta-keyword">/hadoop/</span>hadoop<span class="number">-2.7</span><span class="number">.3</span>/tmp<span class="params">&lt;/value&gt;</span></span><br><span class="line">             <span class="params">&lt;description&gt;</span>Abase for other temporary directories.<span class="params">&lt;/description&gt;</span></span><br><span class="line">        <span class="params">&lt;/property&gt;</span></span><br><span class="line">        <span class="params">&lt;property&gt;</span></span><br><span class="line">             <span class="params">&lt;name&gt;</span>fs.defaultFS<span class="params">&lt;/name&gt;</span></span><br><span class="line">             <span class="params">&lt;value&gt;</span>hdfs:<span class="comment">//localhost:9000&lt;/value&gt;</span></span><br><span class="line">        <span class="params">&lt;/property&gt;</span></span><br><span class="line"><span class="params">&lt;/configuration&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>####还要特别注意这里面的路径都要写你安装hadoop的路径，千万别错了。后面出问题找很麻烦<br>这里要注意要创建一个tmp的文件夹，防止以后有问题出现<br><img src="http:// prj1hj366.bkt.clouddn.com/qiniu_picGO/20190515211448.png" alt></p>
+<p>然后配置hdfs-site.xml文件<br><figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="params">&lt;configuration&gt;</span></span><br><span class="line"><span class="params">&lt;property&gt;</span></span><br><span class="line">             <span class="params">&lt;name&gt;</span>dfs.replication<span class="params">&lt;/name&gt;</span></span><br><span class="line">             <span class="params">&lt;value&gt;</span><span class="number">1</span><span class="params">&lt;/value&gt;</span></span><br><span class="line">        <span class="params">&lt;/property&gt;</span></span><br><span class="line">        <span class="params">&lt;property&gt;</span></span><br><span class="line">             <span class="params">&lt;name&gt;</span>dfs.namenode.name.dir<span class="params">&lt;/name&gt;</span></span><br><span class="line">             <span class="params">&lt;value&gt;</span>file:<span class="meta-keyword">/usr/</span>local<span class="meta-keyword">/hadoop/</span>hadoop<span class="number">-2.7</span><span class="number">.3</span><span class="meta-keyword">/tmp/</span>dfs/name<span class="params">&lt;/value&gt;</span></span><br><span class="line">        <span class="params">&lt;/property&gt;</span></span><br><span class="line">        <span class="params">&lt;property&gt;</span></span><br><span class="line">             <span class="params">&lt;name&gt;</span>dfs.datanode.data.dir<span class="params">&lt;/name&gt;</span></span><br><span class="line">             <span class="params">&lt;value&gt;</span>file:<span class="meta-keyword">/usr/</span>local<span class="meta-keyword">/hadoop/</span>hadoop<span class="number">-2.7</span><span class="number">.3</span><span class="meta-keyword">/tmp/</span>dfs/data<span class="params">&lt;/value&gt;</span></span><br><span class="line">        <span class="params">&lt;/property&gt;</span></span><br><span class="line"><span class="params">&lt;/configuration&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>###注意：这里的路径也是安装路径</p>
+<p>Hadoop 的运行方式是由配置文件决定的（运行 Hadoop 时会读取配置文件），因此如果需要从伪分布式模式切换回非分布式模式，需要删除 core-site.xml 中的配置项。此外，伪分布式虽然只需要配置 fs.defaultFS 和 dfs.replication 就可以运行（可参考官方教程），不过若没有配置 hadoop.tmp.dir 参数，则默认使用的临时目录为 /tmp/hadoo-hadoop，而这个目录在重启时有可能被系统清理掉，导致必须重新执行 format 才行。所以我们进行了设置，同时也指定 dfs.namenode.name.dir 和 dfs.datanode.data.dir，否则在接下来的步骤中可能会出错。</p>
+<p>配置完成后，执行 NameNode 的格式化<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./<span class="keyword">bin/hdfs </span>namenode -format</span><br></pre></td></tr></table></figure></p>
+<p>如果出现bash: ./bin/hdfs: No such file or directory</p>
+<p>则可以去你Hadoop安装目录下的bin目录运行，是一样的<br><figure class="highlight dos"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hdfs namenode -<span class="built_in">format</span></span><br></pre></td></tr></table></figure></p>
+<p>最后出现如下图，那么证明成功了<br><img src="http:// prj1hj366.bkt.clouddn.com/qiniu_picGO/20190515212307.png" alt></p>
+<p>启动namenode和datanode进程，并查看启动结果<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./sbin/start-dfs.sh</span><br><span class="line">jps</span><br></pre></td></tr></table></figure></p>
+<p><img src="http:// prj1hj366.bkt.clouddn.com/qiniu_picGO/20190515223447.png" alt></p>
+<p>然后停止<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./sbin/stop-dfs.sh</span><br><span class="line">jps</span><br></pre></td></tr></table></figure></p>
+<p>看看全启动是否成功，运行下面命令<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">start-all.sh</span><br><span class="line">jps</span><br></pre></td></tr></table></figure></p>
+<p>####如果出现下面的图就说明你安装成功了 恭喜你！！！<br><img src="http:// prj1hj366.bkt.clouddn.com/qiniu_picGO/20190515223929.png" alt></p>
+<p>成功启动后，可以访问 Web 界面 <a href="http://localhost:50070" target="_blank" rel="noopener">http://localhost:50070</a> 查看 NameNode 和 Datanode 信息，还可以在线查看 HDFS 中的文件。<br><img src="http:// prj1hj366.bkt.clouddn.com/qiniu_picGO/20190515224126.png" alt></p>
+<p>更多的细节可以参照<a href="https://www.cnblogs.com/87hbteo/p/7606012.html" target="_blank" rel="noopener">https://www.cnblogs.com/87hbteo/p/7606012.html</a> 感谢大佬<br>还有林子雨编写的《大数据技术 原理与应用》</p>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">赞赏</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src data-src="/img/donate.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br>
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+        <li>
+            <a target="_blank" href="https://github.com/zth19960413">
+                            <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+        
+
+    </ul>
+    
+    <p>
+        <span>/</span>
+        
+        <span><a href="https://www.sunning123.top">BaoZhaTou&#39;s Page</a></span>
+        <span>/</span>
+        
+        <span><a href="#">It helps SEO</a></span>
+        <span>/</span>
+        
+    </p>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://airclouds-blog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>
