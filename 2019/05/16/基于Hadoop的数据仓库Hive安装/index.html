@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="阿九的博客">
+    <meta name="keyword" content="阿九">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        基于Hadoop的数据仓库Hive安装 - 阿九的狗窝 | Ajiu&#39;s kennel
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> 人生就是不停的遇到困难，然后解决困难 </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar">
+            <img src="/img/avatar.jpg">
+        </div>
+        <div class="name">
+            <i>阿 九</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li>
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li>
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li>
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、安装Hive"><span class="toc-text">一、安装Hive</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#配置环境变量"><span class="toc-text">配置环境变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#修改-usr-local-hive-conf下的hive-site-xml"><span class="toc-text">修改/usr/local/hive/conf下的hive-site.xml</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、安装并配置mysql"><span class="toc-text">二、安装并配置mysql</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#下面配置mysql的jdbc"><span class="toc-text">下面配置mysql的jdbc</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#启动并登陆mysql-shell"><span class="toc-text">启动并登陆mysql shell</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#新建hive数据库"><span class="toc-text">新建hive数据库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置mysql允许hive接入："><span class="toc-text">配置mysql允许hive接入：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#启动hive"><span class="toc-text">启动hive</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#推荐"><span class="toc-text">推荐</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考："><span class="toc-text">参考：</span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input">
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+        <div class="index-about-mobile">
+            <i> 人生就是不停的遇到困难，然后解决困难 </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        基于Hadoop的数据仓库Hive安装
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2019-05-16 18:03:37</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#Hadoop" title="Hadoop">Hadoop</a>
+        <span>/</span>
+        
+        <a class="tag" href="/tags/#Hive" title="Hive">Hive</a>
+        <span>/</span>
+        
+        <a class="tag" href="/tags/#数据仓库" title="数据仓库">数据仓库</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+
+    </div>
+    <div class="post-content ">
+        <p>前面的博客，我们已经安装好了Hadoop，对于Hadoop的也有了比较深的了解。下面是我对数据仓库Hive的安装</p>
+<h2 id="一、安装Hive"><a href="#一、安装Hive" class="headerlink" title="一、安装Hive"></a>一、安装Hive</h2><p><strong>Hive的下载地址：<a href="https://mirrors.tuna.tsinghua.edu.cn/apache/hive/hive-1.2.2/apache-hive-1.2.2-bin.tar.gz" target="_blank" rel="noopener">https://mirrors.tuna.tsinghua.edu.cn/apache/hive/hive-1.2.2/apache-hive-1.2.2-bin.tar.gz</a></strong></p>
+<p>由于我下载的这个版本，所以我给的链接是这个版本的</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo tar -zxvf <span class="string">./apache-hive-1.2.1-bin.tar.gz</span> -C <span class="string">/usr/local</span>   <span class="comment"># 解压到/usr/local中</span></span><br><span class="line"><span class="keyword">cd</span> <span class="string">/usr/local/</span></span><br><span class="line">sudo mv apache-hive-1.2.1-bin hive       <span class="comment"># 将文件夹名改为hive</span></span><br><span class="line">sudo chown -R hadoop<span class="function">:hadoop</span> hive            <span class="comment"># 修改文件权限</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意，上面的hadoop：hadoop是用户组和用户名</p>
+</blockquote>
+<h3 id="配置环境变量"><a href="#配置环境变量" class="headerlink" title="配置环境变量"></a>配置环境变量</h3><p>为了方便使用，我们把hive命令加入到环境变量中去，</p>
+<p>请使用gedit编辑器打开/etc/profile文件，命令如下：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo gedit <span class="regexp">/etc/</span>profile</span><br></pre></td></tr></table></figure>
+<p>在文件最后一行加入下面内容：<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="builtin-name">export</span> <span class="attribute">HIVE_HOME</span>=/usr/local/hive </span><br><span class="line"><span class="builtin-name">export</span> <span class="attribute">PATH</span>=<span class="variable">$PATH</span>:$HIVE_HOME/bin</span><br></pre></td></tr></table></figure></p>
+<p>这里还需要HADOOP_HOME因为在上一篇或者以前你已经配好了，那就不用再写了</p>
+<p>在打开一个终端运行下面命令<br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">su </span><br><span class="line"><span class="keyword">source</span> <span class="regexp">/etc/</span>profile</span><br></pre></td></tr></table></figure></p>
+<h3 id="修改-usr-local-hive-conf下的hive-site-xml"><a href="#修改-usr-local-hive-conf下的hive-site-xml" class="headerlink" title="修改/usr/local/hive/conf下的hive-site.xml"></a>修改/usr/local/hive/conf下的hive-site.xml</h3><p>执行如下命令：</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd <span class="regexp">/usr/</span>local<span class="regexp">/hive/</span>conf</span><br><span class="line">mv hive-<span class="keyword">default</span>.xml.template hive-<span class="keyword">default</span>.xml</span><br></pre></td></tr></table></figure>
+<p>上面命令是将hive-default.xml.template重命名为hive-default.xml；</p>
+<p>然后，使用gedit编辑器新建一个配置文件hive-site.xml，命令如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;</span></span><br><span class="line"><span class="meta">&lt;?xml-stylesheet type="text/xsl" href="configuration.xsl"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>javax.jdo.option.ConnectionURL<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>jdbc:mysql://localhost:3306/hive?createDatabaseIfNotExist=true<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">description</span>&gt;</span>JDBC connect string for a JDBC metastore<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>javax.jdo.option.ConnectionDriverName<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>com.mysql.jdbc.Driver<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">description</span>&gt;</span>Driver class name for a JDBC metastore<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>javax.jdo.option.ConnectionUserName<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>hive<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">description</span>&gt;</span>username to use against metastore database<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>javax.jdo.option.ConnectionPassword<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>hive<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">description</span>&gt;</span>password to use against metastore database<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意：这里一定不要写错了，如果写错了一个字，后面会出很大的问题，查找起来特别麻烦，就像C语言指针错了一样。很烦</p>
+</blockquote>
+<h2 id="二、安装并配置mysql"><a href="#二、安装并配置mysql" class="headerlink" title="二、安装并配置mysql"></a>二、安装并配置mysql</h2><p><strong>这里我认为是最麻烦的，因为容易安装失败，安装失败后，一定要卸载干净再下载</strong></p>
+<p><strong>可能大家在Windows安装mysql有心态炸的时候吧，还记得那四个对号。我记得我当初心态炸了</strong></p>
+<p>这里我们采用MySQL数据库保存Hive的元数据，而不是采用Hive自带的derby来存储元数据。</p>
+<p>ubuntu上安装mysql非常简单只需要几条命令就可以完成。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get <span class="keyword">install</span> mysql-<span class="keyword">server</span></span><br><span class="line">sudo apt-<span class="keyword">get</span> <span class="keyword">install</span> mysql-<span class="keyword">client</span></span><br><span class="line">sudo apt-<span class="keyword">get</span> <span class="keyword">install</span> libmysqlclient-dev</span><br></pre></td></tr></table></figure>
+<p>安装过程中会提示设置密码什么的，注意设置了不要忘了，安装完成之后可以使用如下命令来检查是否安装成功：</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo netstat -tap <span class="string">| grep mysql</span></span><br></pre></td></tr></table></figure>
+<p>通过上述命令检查之后，如果看到有mysql 的socket处于 listen 状态则表示安装成功。</p>
+<p>登陆mysql数据库可以通过如下命令：</p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">mysql -u root -p</span></span><br></pre></td></tr></table></figure>
+<p><img src="http://prj1hj366.bkt.clouddn.com/qiniu_picGO/20190516183158.png"></p>
+<p>如果出现如上突脸看到mysql 的socket处于 listen 状态则表示安装成功。</p>
+<p>登陆mysql数据库可以通过如下命令：<br><figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">mysql -u root -p</span></span><br></pre></td></tr></table></figure></p>
+<p>-u 表示选择登陆的用户名， -p 表示登陆的用户密码，上面命令输入之后会提示输入密码，此时输入密码就可以登录到mysql。</p>
+<p><img src="http://prj1hj366.bkt.clouddn.com/qiniu_picGO/20190516183347.png"></p>
+<p>最后出现这个证明你完全没有问题了</p>
+<h3 id="下面配置mysql的jdbc"><a href="#下面配置mysql的jdbc" class="headerlink" title="下面配置mysql的jdbc"></a>下面配置mysql的jdbc</h3><p>**mysql jdbc的包下载地址：<a href="https://dev.mysql.com/downloads/connector/j/" target="_blank" rel="noopener">https://dev.mysql.com/downloads/connector/j/</a></p>
+<p>或者通过别的渠道，我这里下载的5.1.4版本的</p>
+<p>下载后运行如下命令<br><figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf mysql-connector-java-<span class="number">5.1</span>.<span class="number">40</span>.tar.gz   <span class="comment">#解压</span></span><br><span class="line">cp mysql-connector-java-<span class="number">5.1</span>.<span class="number">40</span>/mysql-connector-java-<span class="number">5.1</span>.<span class="number">40</span>-bin.jar  /usr/local/hive/<span class="class"><span class="keyword">lib</span> <span class="comment">#将mysql-connector-java-5.1.40-bin.jar拷贝到/usr/local/hive/lib目录下</span></span></span><br></pre></td></tr></table></figure></p>
+<h3 id="启动并登陆mysql-shell"><a href="#启动并登陆mysql-shell" class="headerlink" title="启动并登陆mysql shell"></a>启动并登陆mysql shell</h3><figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">service mysql <span class="literal">start</span> <span class="comment">#启动mysql服务</span></span><br><span class="line">mysql -u root -p  <span class="comment">#登陆shell界面</span></span><br></pre></td></tr></table></figure>
+<h3 id="新建hive数据库"><a href="#新建hive数据库" class="headerlink" title="新建hive数据库"></a>新建hive数据库</h3><figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; <span class="keyword">create</span> <span class="keyword">database</span> hive;    #这个hive数据库与hive-site.xml中localhost:3306/hive的hive对应，用来保存hive元数据</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意：在运行mysql和以后运行hive命令，一定不要忘了后面加；号，要不命令是不会生效的，系统默认还没有完成命令的编写。</p>
+</blockquote>
+<h3 id="配置mysql允许hive接入："><a href="#配置mysql允许hive接入：" class="headerlink" title="配置mysql允许hive接入："></a>配置mysql允许hive接入：</h3><figure class="highlight livescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; grant all <span class="literal">on</span> *.* <span class="keyword">to</span> hive@localhost identified <span class="keyword">by</span> <span class="string">'hive'</span>;   <span class="comment">#将所有数据库的所有表的所有权限赋给hive用户，后面的hive是配置hive-site.xml中配置的连接密码</span></span><br><span class="line">mysql&gt; flush privileges;  <span class="comment">#刷新mysql系统权限关系表</span></span><br></pre></td></tr></table></figure>
+<h2 id="启动hive"><a href="#启动hive" class="headerlink" title="启动hive"></a>启动hive</h2><p>启动hive之前，先启动hadoop集群</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="literal">start</span>-all.sh <span class="comment">#启动hadoop</span></span><br></pre></td></tr></table></figure>
+<p><img src="http://prj1hj366.bkt.clouddn.com/qiniu_picGO/20190516184518.png"></p>
+<p>如果出现上面图出现6个，那说明启动成功了，如果不成功，看那个没出来去网上查找解决方案</p>
+<p>然后启动hive<br><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">hive</span>  <span class="comment">#启动hive</span></span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>注意，我们这里已经配置了PATH，所以，不要把start-all.sh和hive命令的路径加上。如果没有配置PATH，请加上路径才能运行命令，比如，本教程Hadoop安装目录是“/usr/local/hadoop”，Hive的安装目录是“/usr/local/hive”，因此，启动hadoop和hive，也可以使用下面带路径的方式：</p>
+</blockquote>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">cd</span> <span class="string">/usr/local/hadoop</span></span><br><span class="line"><span class="string">./sbin/start-all.sh</span></span><br><span class="line"><span class="keyword">cd</span> <span class="string">/usr/local/hive</span></span><br><span class="line"><span class="string">./bin/hive</span></span><br></pre></td></tr></table></figure>
+<p>如果出现如下错误</p>
+<p><img src="http://prj1hj366.bkt.clouddn.com/qiniu_picGO/20190516200558.png"></p>
+<p>则需要进入到hadoop安装目录下的share/hadoop/yarn/lib下删除jline-0.9.94.jar文件，再启动hive即可（因为高版本的Hadoop对Hive有捆绑）。</p>
+<p>如果出现，这里我一直在处理问题，我忘了截图了，就是出现(jdbc-type=””, sql-type=””) 这种的错误，是因为jdk的版本过高，造成编译过程中出现了问题</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"> Datastore.Schema (Log4JLogger.java:<span class="builtin-name">error</span>(125)) - Failed initialising database.</span><br><span class="line">The java<span class="built_in"> type </span>java.lang.Integer (<span class="attribute">jdbc-type</span>=<span class="string">""</span>, <span class="attribute">sql-type</span>=<span class="string">""</span>) cant be mapped <span class="keyword">for</span> this datastore. <span class="literal">No</span> mapping is available.</span><br><span class="line">org.datanucleus.exceptions.NucleusException: The java<span class="built_in"> type </span>java.lang.Integer (<span class="attribute">jdbc-type</span>=<span class="string">""</span>, <span class="attribute">sql-type</span>=<span class="string">""</span>) cant be mapped <span class="keyword">for</span> this datastore. <span class="literal">No</span> mapping is available.</span><br></pre></td></tr></table></figure>
+<p><strong>特别注意！！！：这里由于我使用的12版本的JKD出现的问题，查找了好久，最后降了版本使用了1.8的就好使了，以后不管干什么不要用高版本的，记住高版本兼容低版本，而低版本用不了高版本！一定要记住不管干什么，要不然查找问题起来特别的麻烦，我也修改了上个博客。</strong></p>
+<p>最后在运行hive</p>
+<p><img src="http://prj1hj366.bkt.clouddn.com/qiniu_picGO/20190516200943.png"></p>
+<p>那么你成功了！恭喜你！</p>
+<p>可以在里面输入SQL语句，如果要退出Hive交互式执行环境，可以输入如下命令：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hive&gt;<span class="keyword">exit</span>;</span><br></pre></td></tr></table></figure>
+<p><strong>这里还要注意一点：</strong></p>
+<p><strong>启动完hive后，启动另外的中段运行jps，看看ResourceManager有没有死掉，如果死掉了。对于后面Hive的使用会出问题。</strong></p>
+<p><strong>简单介绍下ResourceManager</strong></p>
+<p><strong>ResourceManager (RM)是仲裁所有可用集群资源的主程序，从而帮助管理在纱线系统上运行的分布式应用程序。它与每个节点的节点管理器(NMs)和每个应用程序的应用程序管理器(AMs)一起工作。</strong></p>
+<h2 id="推荐"><a href="#推荐" class="headerlink" title="推荐"></a>推荐</h2><p>如果你有英语的一定基础，或者你可以看懂英文的文档推荐一个网站<a href="https://zh.hortonworks.com/blog/apache-hadoop-yarn-resourcemanager/" target="_blank" rel="noopener">https://zh.hortonworks.com/blog/apache-hadoop-yarn-resourcemanager/</a></p>
+<p>这个网站介绍了ResourceManager，你也可以查找相关的文档，英文的文档我认为更加的细致。</p>
+<p>如果你Java的变成能力特别好，推荐你看Hadoop的底层源码。</p>
+<h2 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h2><p>【林子雨编写的《大数据 基础编程、实验和案例教程》】</p>
+
+        
+            <div class="donate-container">
+    <div class="donate-button">
+        <button id="donate-button">赞赏</button>
+    </div>
+    <div class="donate-img-container hide" id="donate-img-container">
+        <img id="donate-img" src data-src="/img/donate.jpg">
+        <p> 感谢鼓励 </p>
+    </div>
+</div>
+        
+        <br>
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+        <li>
+            <a target="_blank" href="https://github.com/zth19960413">
+                            <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+        
+
+    </ul>
+    
+    <p>
+        <span>/</span>
+        
+        <span><a href="https://www.sunning123.top">BaoZhaTou&#39;s Page</a></span>
+        <span>/</span>
+        
+        <span><a href="#">It helps SEO</a></span>
+        <span>/</span>
+        
+    </p>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    <script>
+        /**
+         *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+         *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+        */
+        if( '' || '')
+        var disqus_config = function () {
+            this.page.url = '';  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = ''; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+
+        (function() { // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = 'https://airclouds-blog.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+
+
+
+</html>
